@@ -23,7 +23,7 @@ public class EmployeeControllerIntegrationTests {
   private WebTestClient webTestClient;
 
   @BeforeEach
-  public void before(){
+  public void before() {
     System.out.println("Before each test, we delete all the employees");
     employeeRepository.deleteAll().subscribe();
   }
@@ -119,5 +119,21 @@ public class EmployeeControllerIntegrationTests {
         .jsonPath("$.firstName").isEqualTo(updatedEmployee.getFirstName())
         .jsonPath("$.lastName").isEqualTo(updatedEmployee.getLastName())
         .jsonPath("$.email").isEqualTo(updatedEmployee.getEmail());
+  }
+
+  @Test
+  public void testDeleteEmployee() {
+    EmployeeDto employeeDto = new EmployeeDto();
+    employeeDto.setFirstName("Angel");
+    employeeDto.setLastName("Cruz");
+    employeeDto.setEmail("me@angelcruzl.dev");
+
+    EmployeeDto savedEmployee = employeeService.saveEmployee(employeeDto).block();
+
+    webTestClient.delete().uri("/api/employees/{id}", savedEmployee.getId())
+        .exchange()
+        .expectStatus().isNoContent()
+        .expectBody()
+        .consumeWith(System.out::println);
   }
 }
