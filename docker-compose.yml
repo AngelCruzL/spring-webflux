@@ -11,3 +11,21 @@ services:
       MONGODB_DATABASE: springboot_webflux_db
     volumes:
       - ./mongo:/data/db
+    networks:
+      - springboot_webflux_network
+
+  app_service:
+    container_name: springbootWebfluxApp
+    depends_on:
+      - db_service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    networks:
+      - springboot_webflux_network
+
+networks:
+  springboot_webflux_network:
