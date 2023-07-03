@@ -37,4 +37,24 @@ public class EmployeeControllerIntegrationTests {
         .jsonPath("$.lastName").isEqualTo(employeeDto.getLastName())
         .jsonPath("$.email").isEqualTo(employeeDto.getEmail());
   }
+
+  @Test
+  public void testGetSingleEmployee() {
+    EmployeeDto employeeDto = new EmployeeDto();
+    employeeDto.setFirstName("Angel");
+    employeeDto.setLastName("Cruz");
+    employeeDto.setEmail("me@angelcruzl.dev");
+
+    EmployeeDto savedEmployee = employeeService.saveEmployee(employeeDto).block();
+
+    webTestClient.get().uri("/api/employees/{id}", savedEmployee.getId())
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody()
+        .consumeWith(System.out::println)
+        .jsonPath("$.id").isEqualTo(savedEmployee.getId())
+        .jsonPath("$.firstName").isEqualTo(savedEmployee.getFirstName())
+        .jsonPath("$.lastName").isEqualTo(savedEmployee.getLastName())
+        .jsonPath("$.email").isEqualTo(savedEmployee.getEmail());
+  }
 }
