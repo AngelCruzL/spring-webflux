@@ -1,7 +1,9 @@
 package dev.angelcruzl.springbootwebflux;
 
 import dev.angelcruzl.springbootwebflux.dto.EmployeeDto;
+import dev.angelcruzl.springbootwebflux.repository.EmployeeRepository;
 import dev.angelcruzl.springbootwebflux.service.EmployeeService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +17,16 @@ public class EmployeeControllerIntegrationTests {
   private EmployeeService employeeService;
 
   @Autowired
+  private EmployeeRepository employeeRepository;
+
+  @Autowired
   private WebTestClient webTestClient;
+
+  @BeforeEach
+  public void before(){
+    System.out.println("Before each test, we delete all the employees");
+    employeeRepository.deleteAll().subscribe();
+  }
 
   @Test
   public void testSaveEmployee() {
